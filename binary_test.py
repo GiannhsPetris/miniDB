@@ -1,35 +1,33 @@
-def bin_search(x):
-    column = ["a","c","d","e","e","e","t"]
+def bin_search(x, list1):
+
     bottom = 0
-    top = len(column)-1
+    top = len(list1)-1
     found = False
     location = -1
     while(bottom <= top) and not(found):
         middle = int((bottom + top)//2)
-        if(column[middle] == x):
+        if(list1[middle] == x):
             location = middle
             found = True
         else:
-            if x < column[middle]:
+            if x < list1[middle]:
                 top = middle - 1
             else:
                 bottom = middle + 1
     # Index of last occurrence
-    location2 = -1
+    location_l = -1
     # Index of first occurrence
-    location3 = -1
+    location_f = -1
 
     # Finds last index that matches x
-    for I in range(len(column)):
-        if column[I] == x:
-            location2 = I
+    for I in range(len(list1)):
+        if list1[I] == x:
+            location_l = I
     # Finds first index that matches x
-    for I in range(len(column)):
-        if column[I] == x:
-            location3 = I
+    for I in range(len(list1)):
+        if list1[I] == x:
+            location_f = I
             break
 
 
-    return location3, location2
-
-print(bin_search("c"))
+    return list1[location_f:location_l+1]

@@ -3,6 +3,7 @@ from tabulate import tabulate
 import pickle
 import os
 from misc import get_op, split_condition
+from binary_test import bin_search
 
 class Table:
     '''
@@ -171,6 +172,8 @@ class Table:
         return indexes_to_del
 
 
+
+
     def _select_where(self, return_columns, condition=None, order_by=None, asc=False, top_k=None):
         '''
         Select and return a table containing specified columns and rows where condition is met
@@ -190,6 +193,7 @@ class Table:
             column_name, operator, value = self._parse_condition(condition)
             column = self.columns[self.column_names.index(column_name)]
             rows = [ind for ind, x in enumerate(column) if get_op(operator, x, value)]
+            #rows = bin_search(value, column)
         else:
             rows = [i for i in range(len(self.columns[0]))]
 
