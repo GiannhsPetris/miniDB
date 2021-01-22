@@ -1,16 +1,24 @@
+import numpy
+import math
+
 def bin_search(x, list1):
 
+    list_or = list1
+    index_sort = numpy.argsort(list1)
+    list_sort = sorted(list1)
+    index_bin = []
+    list_final = []
     bottom = 0
-    top = len(list1)-1
+    top = len(list_sort)-1
     found = False
     location = -1
     while(bottom <= top) and not(found):
         middle = int((bottom + top)//2)
-        if(list1[middle] == x):
+        if(list_sort[middle] == x):
             location = middle
             found = True
         else:
-            if x < list1[middle]:
+            if x < list_sort[middle]:
                 top = middle - 1
             else:
                 bottom = middle + 1
@@ -20,14 +28,20 @@ def bin_search(x, list1):
     location_f = -1
 
     # Finds last index that matches x
-    for I in range(len(list1)):
-        if list1[I] == x:
+    for I in range(len(list_sort)):
+        if list_sort[I] == x:
             location_l = I
     # Finds first index that matches x
-    for I in range(len(list1)):
-        if list1[I] == x:
+    for I in range(len(list_sort)):
+        if list_sort[I] == x:
             location_f = I
             break
 
+    bin_res =  list(range(math.ceil(location_f), math.ceil(location_l)+1))
+    for i in bin_res: index_bin.append(index_sort[i])
+    for i in index_bin: list_final.append(list_or[i])
 
-    return list1[location_f:location_l+1]
+
+
+    #return location_f, location_l
+    return index_bin
