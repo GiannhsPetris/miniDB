@@ -171,9 +171,6 @@ class Table:
         # we have to return the deleted indexes, since they will be appended to the insert_stack
         return indexes_to_del
 
-
-
-
     def _select_where(self, return_columns, condition=None, order_by=None, asc=False, top_k=None):
         '''
         Select and return a table containing specified columns and rows where condition is met
@@ -192,16 +189,51 @@ class Table:
         if condition is not None:
             column_name, operator, value = self._parse_condition(condition)
             column = self.columns[self.column_names.index(column_name)]
-            print(column)
-            print(value)
+            rows = [ind for ind, x in enumerate(column) if get_op(operator, x, value)]
+        else:
+            rows = [i for i in range(len(self.columns[0]))]
+
+        # top k rows
+        rows = rows[:top_k]
+        # copy the old dict, but only the rows and columns of data with index in rows/columns (the indexes that we want returned)
+        dict = {(key):([[self.data[i][j] for j in return_cols] for i in rows] if key=="data" else value) for key,value in self.__dict__.items()}
+
+        # we need to set the new column names/types and no of columns, since we might
+        # only return some columns
+        dict['column_names'] = [self.column_names[i] for i in return_cols]
+        dict['column_types']   = [self.column_types[i] for i in return_cols]
+        dict['_no_of_columns'] = len(return_cols)
+
+        # order by the return table if specified
+        if order_by is None:
+            return Table(load=dict)
+        else:
+            return Table(load=dict).order_by(order_by, asc)
+
+
+    def _select_where_bin(self, return_columns, condition=None, order_by=None, asc=False, top_k=None):
+        '''
+        Select and return a table containing specified columns and rows where condition is met
+        '''
+
+        # if * return all columns, else find the column indexes for the columns specified
+        if return_columns == '*':
+            return_cols = [i for i in range(len(self.column_names))]
+        elif isinstance(return_columns, str):
+            raise Exception(f'Return columns should be "*" or of type list. (the second parameter is return_columns not condition)')
+        else:
+            return_cols = [self.column_names.index(colname) for colname in return_columns]
+
+        # if condition is None, return all rows
+        # if not, return the rows with values where condition is met for value
+        if condition is not None:
+            column_name, operator, value = self._parse_condition(condition)
+            column = self.columns[self.column_names.index(column_name)]
             list_test = bin_search(value, column)
             if list_test == 0:
-                print("den vre8hke")
-                return 0
+                rows = []
             else:
                 rows = [i for i in list_test]
-                #rows = [ind for ind, x in enumerate(column) if get_op(operator, x, value)]
-                print(rows)
         else:
             rows = [i for i in range(len(self.columns[0]))]
 
