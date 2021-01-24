@@ -8,6 +8,7 @@ def bin_search(x, list1):
     list_sort = sorted(list1)
     index_bin = []
     list_final = []
+    print(x)
     bottom = 0
     top = len(list_sort)-1
     found = False
@@ -37,11 +38,11 @@ def bin_search(x, list1):
             location_f = I
             break
 
-    bin_res =  list(range(math.ceil(location_f), math.ceil(location_l)+1))
-    for i in bin_res: index_bin.append(index_sort[i])
-    for i in index_bin: list_final.append(list_or[i])
+    if location_f == -1:
+        return 0
+    else:
+        bin_res =  list(range(math.ceil(location_f), math.ceil(location_l)+1))
+        for i in bin_res: index_bin.append(index_sort[i])
+        for i in index_bin: list_final.append(list_or[i])
 
-
-
-    #return location_f, location_l
-    return index_bin
+        return index_bin

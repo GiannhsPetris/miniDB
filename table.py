@@ -192,8 +192,16 @@ class Table:
         if condition is not None:
             column_name, operator, value = self._parse_condition(condition)
             column = self.columns[self.column_names.index(column_name)]
-            rows = [ind for ind, x in enumerate(column) if get_op(operator, x, value)]
-            #rows = bin_search(value, column)
+            print(column)
+            print(value)
+            list_test = bin_search(value, column)
+            if list_test == 0:
+                print("den vre8hke")
+                return 0
+            else:
+                rows = [i for i in list_test]
+                #rows = [ind for ind, x in enumerate(column) if get_op(operator, x, value)]
+                print(rows)
         else:
             rows = [i for i in range(len(self.columns[0]))]
 
