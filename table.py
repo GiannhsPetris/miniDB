@@ -3,7 +3,7 @@ from tabulate import tabulate
 import pickle
 import os
 from misc import get_op, split_condition
-from binary_test import bin_search
+from binary_search import bin_search
 
 class Table:
     '''
