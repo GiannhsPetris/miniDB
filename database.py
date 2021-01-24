@@ -5,7 +5,7 @@ from time import sleep, localtime, strftime
 import os
 from btree import Btree
 import shutil
-from misc import split_condition
+from misc import split_condition, split_condition_bin
 
 class Database:
     '''
@@ -329,6 +329,43 @@ class Database:
                 return table
             else:
                 table.show()
+
+    def select_bin(self, table_name, columns, condition=None, order_by=None, asc=False,\
+               top_k=None, save_as=None, return_object=False):
+        '''
+        Selects and outputs a table's data where condtion is met.
+
+        table_name -> table's name (needs to exist in database)
+        columns -> The columns that will be part of the output table (use '*' to select all the available columns)
+        condition -> a condition using the following format :
+                    'column[==]value' or
+                    'value[==]column'.
+
+                    operatores supported -> ==
+        order_by -> A column name that signals that the resulting table should be ordered based on it. Def: None (no ordering)
+        asc -> If True order by will return results using an ascending order. Def: False
+        top_k -> A number (int) that defines the number of rows that will be returned. Def: None (all rows)
+        save_as -> The name that will be used to save the resulting table in the database. Def: None (no save)
+        return_object -> If true, the result will be a table object (usefull for internal usage). Def: False (the result will be printed)
+
+        '''
+        self.load(self.savedir)
+        if self.is_locked(table_name):
+            return
+        self.lockX_table(table_name)
+        if condition is not None:
+            condition_column = split_condition_bin(condition)[0]
+        table = self.tables[table_name]._select_where_bin(columns, condition, order_by, asc, top_k)
+        self.unlock_table(table_name)
+        if save_as is not None:
+            table._name = save_as
+            self.table_from_object(table)
+        else:
+            if return_object:
+                return table
+            else:
+                table.show()
+
 
     def show_table(self, table_name, no_of_rows=None):
         '''
