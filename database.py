@@ -409,6 +409,26 @@ class Database:
             else:
                 table.show()
 
+    def select_bin_stack(self, table_name, columns, condition=None, order_by=None, asc=False,\
+              save_as=None, return_object=False):
+        insert_table = table_name + "_insert_queue"
+        self.load(self.savedir)
+        if self.is_locked(table_name):
+            return
+        self.lockX_table(table_name)
+        if condition is not None:
+            condition_column = split_condition_bin(condition)[0]
+        list_stack = self.tables[insert_table]
+        table = self.tables[table_name]._select_stack_bin(table_name,list_stack,columns, condition, order_by, asc)
+        self.unlock_table(table_name)
+        if save_as is not None:
+            table._name = save_as
+            self.table_from_object(table)
+        else:
+            if return_object:
+                return table
+            else:
+                table.show()
 
     def show_table(self, table_name, no_of_rows=None):
         '''
