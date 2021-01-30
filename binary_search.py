@@ -4,8 +4,14 @@ import math
 def bin_search(x, list1):
 
     list_or = list1
-    index_sort = numpy.argsort(list1)
-    list_sort = sorted(list1)
+    #index_sort = numpy.argsort(list1)
+    #index_sort = [b[0] for b in sorted(enumerate(list1),key=lambda i:i[1] (i is None, i))]
+    index_sort = sorted(range(len(list1)), key=lambda k:(list1[k] is None,  list1[k]))
+    list_sort_none = sorted(list1, key=lambda x: (x is None, x))
+    list_sort = []
+    for val in list_sort_none:
+        if val != None :
+            list_sort.append(val)
     index_bin = []
     list_final = []
     print(x)
