@@ -4,8 +4,6 @@ import math
 def bin_search(x, list1):
 
     list_or = list1
-    #index_sort = numpy.argsort(list1)
-    #index_sort = [b[0] for b in sorted(enumerate(list1),key=lambda i:i[1] (i is None, i))]
     index_sort = sorted(range(len(list1)), key=lambda k:(list1[k] is None,  list1[k]))
     list_sort_none = sorted(list1, key=lambda x: (x is None, x))
     list_sort = []
@@ -14,7 +12,6 @@ def bin_search(x, list1):
             list_sort.append(val)
     index_bin = []
     list_final = []
-    print(x)
     bottom = 0
     top = len(list_sort)-1
     found = False
@@ -51,4 +48,4 @@ def bin_search(x, list1):
         for i in bin_res: index_bin.append(index_sort[i])
         for i in index_bin: list_final.append(list_or[i])
 
-        return index_bin
+    return index_bin
