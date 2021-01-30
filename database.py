@@ -248,20 +248,12 @@ class Database:
         insert_table = table_name + "_insert_queue"
         if insert_table in self.tables:
             column = self.tables[insert_table].columns[self.tables[insert_table].column_names.index('counter')]
+            if column[-1] == None:
+                column[-1] = 0
             counter_num = column[-1] + 1
             column2 = self.tables[insert_table].columns[0]
             if counter_num >= 3:
-                len_col = len(self.tables[insert_table].columns)
-                len_row = len(self.tables[insert_table].columns[1])
-                new_row = []
-                for i in range(len_row) :
-                    for j in range(len_col - 1) :
-                            new_row.append(self.tables[insert_table].columns[j][i])
-                    if new_row[0] != None:
-                        self.insert(table_name, new_row)
-                    new_row = []
-                condition = 'counter>=1'
-                self.delete(insert_table,condition)
+                self.empty_stack(insert_table, table_name)
                 counter_num = 1
                 row.append(counter_num)
                 self.insert(insert_table, row)
@@ -280,6 +272,18 @@ class Database:
             self.insert(insert_table, row)
 
 
+    def empty_stack(self, insert_table, table_name ):
+        len_col = len(self.tables[insert_table].columns)
+        len_row = len(self.tables[insert_table].columns[1])
+        new_row = []
+        for i in range(len_row) :
+            for j in range(len_col - 1) :
+                    new_row.append(self.tables[insert_table].columns[j][i])
+            if new_row[0] != None:
+                self.insert(table_name, new_row)
+            new_row = []
+        condition = 'counter>=1'
+        self.delete(insert_table,condition)
 
 
     def update(self, table_name, set_value, set_column, condition):
