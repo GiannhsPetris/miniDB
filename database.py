@@ -89,6 +89,7 @@ class Database:
         self._update_meta_insert_stack()
 
 
+
     def create_table(self, name=None, column_names=None, column_types=None, primary_key=None, load=None):
         '''
         This method create a new table. This table is saved and can be accessed by
@@ -243,6 +244,44 @@ class Database:
             self.save()
 
 
+    def insert_to_buffer(self, table_name, row, lock_load_save=True):
+        insert_table = table_name + "_insert_queue"
+        if insert_table in self.tables:
+            column = self.tables[insert_table].columns[self.tables[insert_table].column_names.index('counter')]
+            counter_num = column[-1] + 1
+            column2 = self.tables[insert_table].columns[0]
+            if counter_num >= 3:
+                len_col = len(self.tables[insert_table].columns)
+                len_row = len(self.tables[insert_table].columns[1])
+                new_row = []
+                for i in range(len_row) :
+                    for j in range(len_col - 1) :
+                            new_row.append(self.tables[insert_table].columns[j][i])
+                    if new_row[0] != None:
+                        self.insert(table_name, new_row)
+                    new_row = []
+                condition = 'counter>=1'
+                self.delete(insert_table,condition)
+                counter_num = 1
+                row.append(counter_num)
+                self.insert(insert_table, row)
+            else:
+                row.append(counter_num)
+                self.insert(insert_table, row)
+        else:
+            col_names = [i for i in self.tables[table_name].column_names]
+            col_names.append('counter')
+            col_types = [i for i in self.tables[table_name].column_types]
+            col_types.append(int)
+
+            self.create_table(insert_table,col_names,col_types)
+            counter_num = 1
+            row.append(counter_num)
+            self.insert(insert_table, row)
+
+
+
+
     def update(self, table_name, set_value, set_column, condition):
         '''
         Update the value of a column where condition is met.
@@ -285,9 +324,9 @@ class Database:
         self._update()
         self.save()
         # we need the save above to avoid loading the old database that still contains the deleted elements
-        if table_name[:4]!='meta':
-            self._add_to_insert_stack(table_name, deleted)
-        self.save()
+        #if table_name[:4]!='meta':
+        #    self._add_to_insert_stack(table_name, deleted)
+        #self.save()
 
     def select(self, table_name, columns, condition=None, order_by=None, asc=False,\
                top_k=None, save_as=None, return_object=False):
