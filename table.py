@@ -230,7 +230,7 @@ class Table:
         if condition is not None:
             column_name, operator, value = self._parse_condition(condition)
             column = self.columns[self.column_names.index(column_name)]
-            list_test = bin_search(value, column)
+            list_test = bin_search(value, column, operator)
             if list_test == 0:
                 rows = []
             else:
@@ -271,14 +271,14 @@ class Table:
         if condition is not None:
             column_name, operator, value = self._parse_condition(condition)
             column = self.columns[self.column_names.index(column_name)]
-            list_test = bin_search(value, column)
+            list_test = bin_search(value, column, operator)
             if list_test == 0:
                 rows1 = []
             else:
                 rows1 = [i for i in list_test]
 
             column2 = list_stack.columns[self.column_names.index(column_name)]
-            list_test2 = bin_search(value, column2)
+            list_test2 = bin_search(value, column2, operator)
             if list_test2 == 0:
                 rows2 = []
             else:

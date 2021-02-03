@@ -1,7 +1,6 @@
-import numpy
 import math
 
-def bin_search(x, list1):
+def bin_search(x, list1, op):
 
     list_or = list1
     index_sort = sorted(range(len(list1)), key=lambda k:(list1[k] is None,  list1[k]))
@@ -44,8 +43,20 @@ def bin_search(x, list1):
     if location_f == -1:
         return 0
     else:
-        bin_res =  list(range(math.ceil(location_f), math.ceil(location_l)+1))
+        if op == '==':
+            bin_res =  list(range(math.ceil(location_f), math.ceil(location_l)+1))
+        elif op == '>=':
+            bin_res = list(range(math.ceil(location_f), math.ceil(len(list_sort))))
+        elif op == '<=':
+            bin_res = list(range(0, math.ceil(location_l)+1))
+        elif op == '<':
+            bin_res = list(range(0, math.ceil(location_l)))
+        elif op == '>':
+            bin_res = list(range(math.ceil(location_f)+1, math.ceil(len(list_sort))))
+
+
         for i in bin_res: index_bin.append(index_sort[i])
-        for i in index_bin: list_final.append(list_or[i])
+
+
 
     return index_bin

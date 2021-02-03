@@ -384,7 +384,7 @@ class Database:
                     'column[==]value' or
                     'value[==]column'.
 
-                    operatores supported -> ==
+                    operatores supported -> == , <= , >=
         order_by -> A column name that signals that the resulting table should be ordered based on it. Def: None (no ordering)
         asc -> If True order by will return results using an ascending order. Def: False
         top_k -> A number (int) that defines the number of rows that will be returned. Def: None (all rows)
@@ -397,7 +397,7 @@ class Database:
             return
         self.lockX_table(table_name)
         if condition is not None:
-            condition_column = split_condition_bin(condition)[0]
+            condition_column = split_condition(condition)[0]
         table = self.tables[table_name]._select_where_bin(columns, condition, order_by, asc, top_k)
         self.unlock_table(table_name)
         if save_as is not None:
@@ -417,7 +417,7 @@ class Database:
             return
         self.lockX_table(table_name)
         if condition is not None:
-            condition_column = split_condition_bin(condition)[0]
+            condition_column = split_condition(condition)[0]
         list_stack = self.tables[insert_table]
         table = self.tables[table_name]._select_stack_bin(table_name,list_stack,columns, condition, order_by, asc)
         self.unlock_table(table_name)
