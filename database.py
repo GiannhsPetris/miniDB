@@ -5,7 +5,7 @@ from time import sleep, localtime, strftime
 import os
 from btree import Btree
 import shutil
-from misc import split_condition, split_condition_bin
+from misc import split_condition
 
 class Database:
     '''
@@ -244,7 +244,7 @@ class Database:
             self.save()
 
 
-    def insert_to_buffer(self, table_name, row, lock_load_save=True):
+    def insert_to_stack(self, table_name, row, lock_load_save=True):
         insert_table = table_name + "_insert_queue"
         if insert_table in self.tables:
             column = self.tables[insert_table].columns[self.tables[insert_table].column_names.index('counter')]
@@ -252,7 +252,7 @@ class Database:
                 column[-1] = 0
             counter_num = column[-1] + 1
             column2 = self.tables[insert_table].columns[0]
-            if counter_num >= 3:
+            if counter_num >= 10:
                 self.empty_stack(insert_table, table_name)
                 counter_num = 1
                 row.append(counter_num)
